@@ -1212,6 +1212,7 @@ let state = loadState();
 let maps = [];
 let markerIndex = {};
 let scopeBounds = {};
+let currentTimelineIndex = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
   renderScenarioCards();
@@ -1247,6 +1248,12 @@ function bindEvents() {
       const target = document.getElementById(jumpTargetButton.dataset.jumpTarget);
       target?.scrollIntoView({ behavior: "smooth", block: "start" });
       window.setTimeout(() => invalidateMaps(), 220);
+      return;
+    }
+
+    const timelineJumpButton = event.target.closest("[data-timeline-index]");
+    if (timelineJumpButton) {
+      goToTimelineIndex(Number(timelineJumpButton.dataset.timelineIndex));
       return;
     }
 
@@ -1293,6 +1300,7 @@ function bindEvents() {
 
     if (event.target.id === "select-recommended") {
       state = cloneState(defaultState);
+      currentTimelineIndex = 0;
       renderScenarioCards();
       renderTimeline();
       renderHotels();
@@ -1326,6 +1334,7 @@ function bindEvents() {
         restaurantCosts: cloneState(defaultState.restaurantCosts),
       };
       state = applyScenarioPreset(state, state.travelMode || defaultState.travelMode);
+      currentTimelineIndex = 0;
       renderScenarioCards();
       renderHotels();
       renderRestaurants();
@@ -1434,6 +1443,20 @@ function bindEvents() {
       saveState();
     }
   });
+
+  const timelinePrev = document.getElementById("timeline-prev");
+  if (timelinePrev) {
+    timelinePrev.addEventListener("click", () => {
+      goToTimelineIndex(currentTimelineIndex - 1);
+    });
+  }
+
+  const timelineNext = document.getElementById("timeline-next");
+  if (timelineNext) {
+    timelineNext.addEventListener("click", () => {
+      goToTimelineIndex(currentTimelineIndex + 1);
+    });
+  }
 }
 
 function renderScenarioCards() {
@@ -1617,11 +1640,14 @@ function renderHotelMapInsights() {
 
 function renderTimeline() {
   const timeline = document.getElementById("timeline");
-  timeline.innerHTML = itineraryDays
+  timeline.innerHTML = `
+    <div class="timeline-viewport" id="timeline-viewport">
+      <div class="timeline-track">
+        ${itineraryDays
     .map((day) => {
       const cards = day.activityIds.map((activityId) => renderActivityCard(activityById[activityId])).join("");
       return `
-        <article class="day-block fade-in" data-day-city="${day.city}">
+        <article class="day-block fade-in timeline-slide" data-day-city="${day.city}" data-timeline-slide>
           <div class="day-head">
             <div>
               <p class="section-kicker">${day.label}</p>
@@ -1635,7 +1661,98 @@ function renderTimeline() {
         </article>
       `;
     })
+    .join("")}
+      </div>
+    </div>
+  `;
+
+  bindTimelineSwipe();
+  renderTimelineProgress();
+  window.requestAnimationFrame(() => {
+    goToTimelineIndex(currentTimelineIndex, false);
+  });
+}
+
+function renderTimelineProgress() {
+  const progress = document.getElementById("timeline-progress");
+  if (!progress) {
+    return;
+  }
+
+  progress.innerHTML = itineraryDays
+    .map(
+      (day, index) => `
+        <button
+          class="timeline-dot ${index === currentTimelineIndex ? "active" : ""}"
+          data-timeline-index="${index}"
+          aria-label="${day.label}"
+          title="${day.label}"
+        >
+          <span>${index + 1}</span>
+        </button>
+      `
+    )
     .join("");
+}
+
+function bindTimelineSwipe() {
+  const viewport = document.getElementById("timeline-viewport");
+  if (!viewport) {
+    return;
+  }
+
+  viewport.addEventListener("scroll", () => {
+    const slides = [...viewport.querySelectorAll("[data-timeline-slide]")];
+    if (slides.length === 0) {
+      return;
+    }
+    const viewportCenter = viewport.scrollLeft + viewport.clientWidth / 2;
+    let bestIndex = currentTimelineIndex;
+    let bestDistance = Number.POSITIVE_INFINITY;
+
+    slides.forEach((slide, index) => {
+      const slideCenter = slide.offsetLeft + slide.clientWidth / 2;
+      const distance = Math.abs(slideCenter - viewportCenter);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        bestIndex = index;
+      }
+    });
+
+    if (bestIndex !== currentTimelineIndex) {
+      currentTimelineIndex = bestIndex;
+      renderTimelineProgress();
+      syncTimelineButtons();
+    }
+  }, { passive: true });
+}
+
+function goToTimelineIndex(index, smooth = true) {
+  const viewport = document.getElementById("timeline-viewport");
+  const slides = viewport ? [...viewport.querySelectorAll("[data-timeline-slide]")] : [];
+  if (!viewport || slides.length === 0) {
+    return;
+  }
+
+  currentTimelineIndex = clamp(index, 0, slides.length - 1);
+  const target = slides[currentTimelineIndex];
+  viewport.scrollTo({
+    left: target.offsetLeft,
+    behavior: smooth ? "smooth" : "auto",
+  });
+  renderTimelineProgress();
+  syncTimelineButtons();
+}
+
+function syncTimelineButtons() {
+  const prev = document.getElementById("timeline-prev");
+  const next = document.getElementById("timeline-next");
+  if (prev) {
+    prev.disabled = currentTimelineIndex <= 0;
+  }
+  if (next) {
+    next.disabled = currentTimelineIndex >= itineraryDays.length - 1;
+  }
 }
 
 function renderActivityCard(activity) {
