@@ -1,0 +1,1723 @@
+:root {
+  --bg-top: #89c8ff;
+  --bg-mid: #2a6fb4;
+  --bg-deep: #071325;
+  --panel: rgba(239, 247, 255, 0.14);
+  --panel-strong: rgba(247, 251, 255, 0.2);
+  --panel-solid: rgba(252, 254, 255, 0.7);
+  --panel-border: rgba(255, 255, 255, 0.28);
+  --panel-border-soft: rgba(255, 255, 255, 0.14);
+  --line: rgba(11, 35, 63, 0.08);
+  --ink: #081628;
+  --muted: #5c6f88;
+  --white: #f8fbff;
+  --accent: #4ba3ff;
+  --accent-strong: #2478ff;
+  --mint: #74e2d2;
+  --amber: #ffbf6b;
+  --rose: #ff8fb0;
+  --shadow: 0 28px 80px rgba(6, 20, 40, 0.22);
+  --shadow-soft: 0 16px 34px rgba(7, 19, 37, 0.12);
+  --radius-2xl: 34px;
+  --radius-xl: 28px;
+  --radius-lg: 22px;
+  --radius-md: 18px;
+  --radius-sm: 14px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 255, 255, 0.78), transparent 18%),
+    radial-gradient(circle at 85% 10%, rgba(116, 226, 210, 0.28), transparent 22%),
+    radial-gradient(circle at 82% 72%, rgba(255, 143, 176, 0.24), transparent 20%),
+    radial-gradient(circle at 18% 82%, rgba(255, 191, 107, 0.16), transparent 18%),
+    linear-gradient(180deg, var(--bg-top) 0%, #6ba9df 14%, #1f4f89 42%, #0f294c 68%, var(--bg-deep) 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 16%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 36%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+input,
+select {
+  color-scheme: light;
+}
+
+a {
+  color: inherit;
+}
+
+.liquid-backdrop {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.liquid-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(18px);
+  opacity: 0.74;
+  mix-blend-mode: screen;
+  animation: drift 18s ease-in-out infinite alternate;
+}
+
+.orb-a {
+  top: -6%;
+  left: -4%;
+  width: 32vw;
+  height: 32vw;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(129, 213, 255, 0.24) 58%, transparent 74%);
+}
+
+.orb-b {
+  top: 12%;
+  right: 8%;
+  width: 24vw;
+  height: 24vw;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.42), rgba(116, 226, 210, 0.32) 58%, transparent 76%);
+  animation-duration: 22s;
+}
+
+.orb-c {
+  bottom: 18%;
+  right: -6%;
+  width: 28vw;
+  height: 28vw;
+  background: radial-gradient(circle at 38% 38%, rgba(255, 205, 214, 0.42), rgba(255, 143, 176, 0.26) 54%, transparent 74%);
+  animation-duration: 20s;
+}
+
+.orb-d {
+  bottom: -8%;
+  left: 12%;
+  width: 22vw;
+  height: 22vw;
+  background: radial-gradient(circle at 42% 42%, rgba(255, 240, 221, 0.44), rgba(255, 191, 107, 0.24) 54%, transparent 78%);
+  animation-duration: 25s;
+}
+
+.liquid-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 72%);
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+  width: min(1440px, calc(100vw - 28px));
+  margin: 14px auto 28px;
+}
+
+.hero,
+.topbar,
+.section-block,
+.summary-panel,
+.map-panel,
+.selection-panel,
+.map-explorer-stage,
+.hotel-map-sidebar,
+.scenario-card,
+.transport-card,
+.timeline-card,
+.lodging-card,
+.restaurant-card,
+.hotel-map-card,
+.reservation-item,
+.metric-pill,
+.hotel-map-metric,
+.budget-line,
+.selected-item,
+.hero-stat,
+.scenario-stat,
+.scenario-total {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.hero,
+.topbar,
+.section-block,
+.summary-panel,
+.map-panel,
+.selection-panel {
+  background:
+    linear-gradient(180deg, rgba(252, 254, 255, 0.24), rgba(221, 236, 255, 0.1)),
+    var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow:
+    var(--shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+}
+
+.hero::before,
+.topbar::before,
+.section-block::before,
+.summary-panel::before,
+.map-panel::before,
+.selection-panel::before,
+.map-explorer-stage::before,
+.hotel-map-sidebar::before,
+.scenario-card::before,
+.transport-card::before,
+.timeline-card::before,
+.lodging-card::before,
+.restaurant-card::before,
+.hotel-map-card::before,
+.reservation-item::before,
+.metric-pill::before,
+.hotel-map-metric::before,
+.budget-line::before,
+.selected-item::before,
+.hero-stat::before,
+.scenario-stat::before,
+.scenario-total::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 42%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.06));
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.16fr 0.94fr;
+  gap: 30px;
+  min-height: min(82svh, 780px);
+  padding: 42px;
+  border-radius: 38px;
+  background:
+    linear-gradient(120deg, rgba(7, 19, 37, 0.78), rgba(9, 28, 53, 0.52)),
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), transparent 26%),
+    url("./assets/images/bund-hero.jpg")
+      center/cover no-repeat;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -18% -24% 42%;
+  height: 360px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(116, 226, 210, 0.26), transparent 54%),
+    radial-gradient(circle at 72% 42%, rgba(255, 143, 176, 0.18), transparent 46%);
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+.hero-copy,
+.hero-visuals {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-copy {
+  align-self: end;
+  max-width: 660px;
+}
+
+.eyebrow,
+.section-kicker,
+.card-kicker {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  color: rgba(239, 247, 255, 0.76);
+}
+
+.hero h1 {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  font-size: clamp(3.1rem, 6.2vw, 6rem);
+  line-height: 0.93;
+  letter-spacing: -0.05em;
+  color: var(--white);
+  text-wrap: balance;
+}
+
+.hero-text {
+  width: min(560px, 100%);
+  margin: 18px 0 0;
+  font-size: 1.04rem;
+  line-height: 1.72;
+  color: rgba(240, 247, 255, 0.84);
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.hero-stat {
+  padding: 14px 16px 15px;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)),
+    rgba(231, 243, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 12px 24px rgba(3, 14, 29, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+.hero-stat span,
+.hero-stat small {
+  display: block;
+  color: rgba(240, 247, 255, 0.72);
+}
+
+.hero-stat span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.hero-stat strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--white);
+  font-size: 0.98rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-stat small {
+  margin-top: 6px;
+  line-height: 1.45;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-button,
+.ghost-button,
+.chip,
+.mini-link {
+  position: relative;
+  border: 0;
+  cursor: pointer;
+  transition:
+    transform 220ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    box-shadow 220ms ease,
+    opacity 220ms ease;
+}
+
+.primary-button,
+.ghost-button {
+  padding: 13px 19px;
+  border-radius: 999px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.primary-button {
+  color: #f7fbff;
+  background:
+    linear-gradient(180deg, rgba(144, 209, 255, 0.36), rgba(66, 135, 255, 0.62)),
+    linear-gradient(135deg, rgba(75, 163, 255, 0.95), rgba(36, 120, 255, 0.92));
+  border: 1px solid rgba(214, 239, 255, 0.4);
+  box-shadow:
+    0 16px 30px rgba(31, 108, 255, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.ghost-button {
+  color: rgba(247, 251, 255, 0.92);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08)),
+    rgba(239, 247, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 12px 26px rgba(4, 15, 27, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.ghost-button.small {
+  padding: 9px 14px;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(236, 244, 255, 0.26)),
+    rgba(249, 252, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+}
+
+.primary-button:hover,
+.ghost-button:hover,
+.chip:hover,
+.mini-link:hover {
+  transform: translateY(-2px);
+}
+
+.primary-button:active,
+.ghost-button:active,
+.chip:active,
+.mini-link:active {
+  transform: translateY(0);
+}
+
+.hero-visuals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1.18fr 1fr;
+  gap: 16px;
+  align-self: stretch;
+}
+
+.hero-frame {
+  min-height: 188px;
+  border-radius: 26px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.06)),
+    rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 18px 40px rgba(4, 17, 33, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+}
+
+.hero-frame-large {
+  grid-row: span 2;
+}
+
+.hero-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.03);
+}
+
+.hero-frame:nth-child(1) {
+  animation: floatCard 10s ease-in-out infinite;
+}
+
+.hero-frame:nth-child(2) {
+  animation: floatCard 12s ease-in-out infinite reverse;
+}
+
+.hero-frame:nth-child(3) {
+  animation: floatCard 11s ease-in-out infinite;
+}
+
+.topbar {
+  position: sticky;
+  top: 14px;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  border-radius: 26px;
+}
+
+.chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(232, 242, 255, 0.12)),
+    rgba(239, 247, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.chip {
+  padding: 10px 15px;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(7, 22, 40, 0.66);
+  font-weight: 800;
+}
+
+.chip.active {
+  color: #f7fbff;
+  background:
+    linear-gradient(180deg, rgba(162, 219, 255, 0.28), rgba(83, 150, 255, 0.65)),
+    linear-gradient(135deg, #4ba3ff, #2f7af8);
+  box-shadow:
+    0 12px 22px rgba(41, 112, 243, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.meta-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.meta-inline span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 13px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(233, 241, 255, 0.12)),
+    rgba(248, 252, 255, 0.12);
+  color: rgba(8, 22, 40, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow:
+    0 12px 24px rgba(10, 20, 40, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  font-size: 0.9rem;
+}
+
+.meta-inline strong {
+  color: var(--ink);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.38fr) minmax(360px, 0.62fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.workspace,
+.sidebar {
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 110px;
+  align-self: start;
+}
+
+.section-block,
+.summary-panel,
+.map-panel,
+.selection-panel {
+  padding: 22px;
+  border-radius: var(--radius-2xl);
+}
+
+.section-head,
+.summary-head,
+.map-head,
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+}
+
+.section-head h2,
+.summary-head h2,
+.map-head h2 {
+  margin: 0;
+  font-size: 1.52rem;
+  letter-spacing: -0.04em;
+}
+
+.section-kicker,
+.card-kicker {
+  color: rgba(14, 54, 111, 0.62);
+}
+
+.section-note,
+.train-copy,
+.map-caption,
+.card-copy,
+.card-details,
+.lodging-note,
+.restaurant-note {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.68;
+}
+
+.transport-grid,
+.lodging-grid,
+.restaurant-grid {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.transport-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.scenario-card,
+.transport-card,
+.timeline-card,
+.lodging-card,
+.restaurant-card {
+  padding: 20px;
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(231, 242, 255, 0.22)),
+    rgba(252, 254, 255, 0.44);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(20px) saturate(170%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+}
+
+.transport-card::after,
+.timeline-card::after,
+.lodging-card::after,
+.restaurant-card::after,
+.scenario-card::after,
+.reservation-item::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -36% 36%;
+  height: 120px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.46), transparent 64%);
+  opacity: 0.44;
+  pointer-events: none;
+}
+
+.route-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  margin: 18px 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.route-inline strong {
+  color: var(--ink);
+}
+
+.input-grid,
+.compact-grid,
+.meal-controls,
+.lodging-controls {
+  display: grid;
+  gap: 12px;
+}
+
+.input-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.compact-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.meal-controls,
+.lodging-controls {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(235, 244, 255, 0.54)),
+    rgba(251, 253, 255, 0.66);
+  color: var(--ink);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 8px 18px rgba(8, 21, 40, 0.06);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid rgba(75, 163, 255, 0.16);
+  border-color: rgba(75, 163, 255, 0.5);
+  box-shadow:
+    0 0 0 4px rgba(75, 163, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
+}
+
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.metric-pill,
+.budget-line,
+.selected-item {
+  padding: 14px 16px;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(235, 244, 255, 0.26)),
+    rgba(252, 254, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 14px 28px rgba(8, 21, 40, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+}
+
+.metric-pill span,
+.budget-line span,
+.selected-item small,
+.card-meta span,
+.practical-item span,
+.scenario-stat span,
+.scenario-total span,
+.reservation-date {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.metric-pill strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.13rem;
+  letter-spacing: -0.03em;
+}
+
+.card-actions,
+.lodging-links,
+.restaurant-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 18px;
+}
+
+.text-link,
+.mini-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(233, 242, 255, 0.22)),
+    rgba(248, 252, 255, 0.38);
+  color: rgba(21, 74, 146, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow:
+    0 10px 20px rgba(8, 21, 40, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+
+.mini-link {
+  padding: 9px 12px;
+}
+
+.scenario-card {
+  display: grid;
+  gap: 14px;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.scenario-card:hover,
+.reservation-item:hover {
+  transform: translateY(-3px);
+}
+
+.scenario-card.selected {
+  border-color: rgba(94, 168, 255, 0.64);
+  box-shadow:
+    0 26px 48px rgba(46, 118, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.54);
+}
+
+.scenario-top,
+.reservation-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 14px;
+}
+
+.scenario-top h3,
+.reservation-top h3 {
+  margin: 0;
+  font-size: 1.12rem;
+  letter-spacing: -0.03em;
+}
+
+.scenario-pill,
+.reservation-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 10px 20px rgba(8, 21, 40, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.scenario-pill {
+  color: #0f4f90;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(232, 242, 255, 0.26)),
+    rgba(247, 251, 255, 0.48);
+}
+
+.scenario-pill.active,
+.reservation-pill.done {
+  color: #0f65cc;
+  background:
+    linear-gradient(180deg, rgba(177, 221, 255, 0.44), rgba(87, 154, 255, 0.72)),
+    rgba(87, 154, 255, 0.36);
+}
+
+.reservation-pill.now {
+  color: #9a4d00;
+  background:
+    linear-gradient(180deg, rgba(255, 242, 221, 0.8), rgba(255, 209, 138, 0.34)),
+    rgba(255, 220, 165, 0.46);
+}
+
+.reservation-pill.soon {
+  color: #9a5f00;
+  background:
+    linear-gradient(180deg, rgba(255, 245, 225, 0.8), rgba(255, 224, 160, 0.26)),
+    rgba(255, 230, 190, 0.42);
+}
+
+.reservation-pill.next {
+  color: #0e6770;
+  background:
+    linear-gradient(180deg, rgba(234, 255, 250, 0.8), rgba(196, 246, 235, 0.26)),
+    rgba(216, 255, 246, 0.42);
+}
+
+.reservation-pill.plan {
+  color: #4d627b;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(235, 244, 255, 0.24)),
+    rgba(247, 251, 255, 0.42);
+}
+
+.scenario-stats,
+.practical-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.scenario-stat,
+.scenario-total,
+.practical-item,
+.reservation-item {
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(235, 244, 255, 0.26)),
+    rgba(252, 254, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 14px 28px rgba(8, 21, 40, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  backdrop-filter: blur(18px) saturate(170%);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+}
+
+.scenario-stat,
+.scenario-total,
+.practical-item {
+  padding: 13px 14px;
+}
+
+.scenario-stat strong,
+.scenario-total strong,
+.practical-item strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.96rem;
+  letter-spacing: -0.03em;
+}
+
+.scenario-total {
+  display: grid;
+  gap: 4px;
+}
+
+.scenario-total strong {
+  font-size: 1.28rem;
+}
+
+.scenario-total small {
+  color: var(--muted);
+}
+
+.timeline {
+  display: grid;
+  gap: 22px;
+  margin-top: 20px;
+}
+
+.day-block {
+  display: grid;
+  gap: 16px;
+}
+
+.day-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.day-title {
+  margin: 0;
+  font-size: 1.24rem;
+  letter-spacing: -0.04em;
+}
+
+.day-subtitle {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.timeline-card,
+.lodging-card,
+.restaurant-card {
+  display: grid;
+  gap: 14px;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    opacity 220ms ease;
+}
+
+.timeline-card:hover,
+.lodging-card:hover,
+.restaurant-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 24px 42px rgba(8, 21, 40, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+.timeline-card.selected,
+.restaurant-card.selected,
+.lodging-card.selected {
+  border-color: rgba(94, 168, 255, 0.62);
+  box-shadow:
+    0 24px 44px rgba(46, 118, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.52);
+}
+
+.card-image {
+  aspect-ratio: 1.58 / 1;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 18px 24px rgba(9, 20, 38, 0.08);
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+
+.card-meta strong,
+.budget-line strong,
+.selected-item strong,
+.lodging-price strong,
+.restaurant-price strong,
+.transport-title strong,
+.dual-price strong {
+  font-size: 0.98rem;
+  letter-spacing: -0.02em;
+}
+
+.title-row,
+.lodging-top,
+.restaurant-top {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title-row h3,
+.lodging-top h3,
+.restaurant-top h3 {
+  margin: 0;
+  font-size: 1.08rem;
+  letter-spacing: -0.03em;
+}
+
+.selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(233, 242, 255, 0.22)),
+    rgba(247, 251, 255, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  box-shadow:
+    0 10px 20px rgba(8, 21, 40, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.selector input[type="checkbox"],
+.selector input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent-strong);
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 8px 11px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(226, 245, 241, 0.18)),
+    rgba(232, 255, 250, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  color: #0e6770;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.tag.warn {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(255, 242, 224, 0.24)),
+    rgba(255, 244, 221, 0.4);
+  color: #936119;
+}
+
+.tag.free {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(227, 250, 238, 0.24)),
+    rgba(228, 255, 238, 0.38);
+  color: #11764d;
+}
+
+.cost-box,
+.hotel-rate-box,
+.restaurant-cost-box,
+.exchange-box,
+.reservation-checklist,
+.transport-box {
+  display: grid;
+  gap: 8px;
+}
+
+.cost-box input,
+.hotel-rate-box input,
+.restaurant-cost-box input {
+  max-width: 190px;
+}
+
+.dual-price,
+.transport-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dual-price {
+  padding: 10px 12px;
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(235, 244, 255, 0.22)),
+    rgba(248, 252, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+.dual-price small,
+.transport-title span,
+.transport-option small,
+.transport-option em {
+  color: var(--muted);
+}
+
+.transport-box {
+  margin-top: 4px;
+}
+
+.transport-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.transport-option {
+  display: grid;
+  gap: 4px;
+  padding: 12px 13px;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(235, 244, 255, 0.24)),
+    rgba(252, 254, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 14px 24px rgba(8, 21, 40, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.transport-option span {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(14, 54, 111, 0.7);
+}
+
+.transport-option.cheapest {
+  border-color: rgba(94, 168, 255, 0.58);
+  box-shadow:
+    0 16px 28px rgba(46, 118, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+.transport-option.cheapest em {
+  color: #0f65cc;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.transport-option em {
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.lodging-grid,
+.restaurant-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lodging-note,
+.restaurant-note {
+  margin: 0;
+}
+
+.summary-panel,
+.selection-panel {
+  gap: 18px;
+}
+
+.wallet-panel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(221, 236, 255, 0.08)),
+    rgba(240, 247, 255, 0.14);
+}
+
+.reservation-checklist {
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.reservation-item {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.reservation-item.done {
+  border-color: rgba(94, 168, 255, 0.52);
+}
+
+.reservation-note {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.reservation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+}
+
+.exchange-box {
+  margin: 16px 0 0;
+}
+
+.grand-total {
+  display: grid;
+  gap: 6px;
+  padding: 20px;
+  margin-top: 16px;
+  border-radius: 24px;
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.8), rgba(226, 239, 255, 0.18)),
+    rgba(247, 251, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  box-shadow:
+    0 18px 32px rgba(6, 20, 40, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+
+.grand-total span,
+.grand-total small {
+  color: var(--muted);
+}
+
+.grand-total strong {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  font-size: 2.34rem;
+  letter-spacing: -0.06em;
+  line-height: 0.98;
+}
+
+.budget-breakdown,
+.selected-items {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.budget-line,
+.selected-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: start;
+}
+
+.map-panel {
+  padding-bottom: 18px;
+}
+
+.map-explorer-panel {
+  padding-bottom: 22px;
+}
+
+.map-head {
+  align-items: center;
+}
+
+.map-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.map-explorer-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(320px, 0.78fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.map-explorer-stage,
+.hotel-map-sidebar {
+  padding: 18px;
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(231, 242, 255, 0.22)),
+    rgba(252, 254, 255, 0.44);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(20px) saturate(170%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+}
+
+.explorer-actions {
+  margin-bottom: 14px;
+}
+
+.ghost-button.small.active-map-scope {
+  color: #f7fbff;
+  background:
+    linear-gradient(180deg, rgba(162, 219, 255, 0.28), rgba(83, 150, 255, 0.65)),
+    linear-gradient(135deg, #4ba3ff, #2f7af8);
+  box-shadow:
+    0 12px 22px rgba(41, 112, 243, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+#map {
+  height: 408px;
+  margin-top: 16px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 20px 34px rgba(8, 21, 40, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+#planner-map {
+  height: 620px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 20px 34px rgba(8, 21, 40, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.map-caption {
+  margin-top: 14px;
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28);
+}
+
+.visit-dot {
+  background: #1a6c68;
+}
+
+.hotel-dot {
+  background: #b07a1b;
+}
+
+.hub-dot {
+  background: #a5462c;
+}
+
+.hotel-map-sidebar {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.hotel-map-insights {
+  display: grid;
+  gap: 12px;
+}
+
+.hotel-map-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(235, 244, 255, 0.26)),
+    rgba(252, 254, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 14px 28px rgba(8, 21, 40, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.44);
+}
+
+.hotel-map-card.selected {
+  border-color: rgba(94, 168, 255, 0.62);
+  box-shadow:
+    0 24px 44px rgba(46, 118, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.52);
+}
+
+.hotel-map-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.hotel-map-head h3 {
+  margin: 0;
+  font-size: 1.02rem;
+  letter-spacing: -0.03em;
+}
+
+.hotel-map-rank,
+.hotel-map-copy {
+  margin: 4px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.hotel-map-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.hotel-map-metric {
+  padding: 12px 13px;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(235, 244, 255, 0.24)),
+    rgba(252, 254, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 14px 24px rgba(8, 21, 40, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.hotel-map-metric span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.hotel-map-metric strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.98rem;
+  letter-spacing: -0.03em;
+}
+
+.leaflet-container {
+  background: rgba(221, 236, 255, 0.16);
+  font: inherit;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(235, 244, 255, 0.84));
+  box-shadow:
+    0 18px 32px rgba(6, 20, 40, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.popup-body strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.popup-body span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.filter-hidden {
+  display: none !important;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px) scale(0.992);
+  animation: reveal 720ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.fade-in:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.fade-in:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.fade-in:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+@keyframes reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(26px, -22px, 0) scale(1.08);
+  }
+}
+
+@keyframes floatCard {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 1220px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .map-explorer-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .lodging-grid,
+  .restaurant-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 26px;
+  }
+
+  .hero-copy {
+    align-self: start;
+  }
+
+  .hero-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visuals {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+  }
+
+  .hero-frame-large {
+    grid-row: span 1;
+  }
+
+  .topbar,
+  .section-head,
+  .summary-head,
+  .map-head,
+  .day-head,
+  .card-head {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .meta-inline {
+    justify-content: flex-start;
+  }
+
+  .transport-grid,
+  .scenario-grid,
+  .day-grid,
+  .lodging-grid,
+  .restaurant-grid,
+  .input-grid,
+  .compact-grid,
+  .meal-controls,
+  .lodging-controls,
+  .metric-row,
+  .scenario-stats,
+  .practical-grid,
+  .transport-options,
+  .hotel-map-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .app-shell {
+    width: min(100vw - 16px, 100%);
+    margin: 8px auto 18px;
+  }
+
+  .hero {
+    padding: 20px;
+    border-radius: 30px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.45rem, 12vw, 4.3rem);
+  }
+
+  .hero-frame {
+    min-height: 140px;
+  }
+
+  .topbar,
+  .section-block,
+  .summary-panel,
+  .map-panel,
+  .selection-panel,
+  .map-explorer-stage,
+  .hotel-map-sidebar {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .chips {
+    width: 100%;
+  }
+
+  .chip {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .title-row,
+  .lodging-top,
+  .restaurant-top,
+  .scenario-top,
+  .hotel-map-head,
+  .reservation-top,
+  .dual-price,
+  .transport-title {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  #map {
+    height: 330px;
+    border-radius: 24px;
+  }
+
+  #planner-map {
+    height: 430px;
+    border-radius: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
