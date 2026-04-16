@@ -1701,6 +1701,38 @@ function bindTimelineSwipe() {
     return;
   }
 
+  // Touch swipe tracking for fling gestures
+  let touchStartX = 0;
+  let touchStartTime = 0;
+  let isDragging = false;
+
+  viewport.addEventListener("touchstart", (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartTime = Date.now();
+    isDragging = true;
+    viewport.classList.add("dragging");
+  });
+
+  viewport.addEventListener("touchend", (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+    viewport.classList.remove("dragging");
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const elapsed = Date.now() - touchStartTime;
+    const delta = touchStartX - touchEndX;
+    const velocity = Math.abs(delta) / (elapsed || 1);
+
+    // Fling detection: if fast swipe (velocity > 0.5), navigate
+    if (velocity > 0.5 && Math.abs(delta) > 30) {
+      if (delta > 0) {
+        goToTimelineIndex(currentTimelineIndex + 1);
+      } else {
+        goToTimelineIndex(currentTimelineIndex - 1);
+      }
+    }
+  });
+
   viewport.addEventListener("scroll", () => {
     const slides = [...viewport.querySelectorAll("[data-timeline-slide]")];
     if (slides.length === 0) {
