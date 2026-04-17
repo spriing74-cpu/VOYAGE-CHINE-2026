@@ -1226,10 +1226,14 @@ document.addEventListener("DOMContentLoaded", () => {
   initMap();
   applyFilter(state.filter);
   bindEvents();
+  syncTopbarState();
   registerServiceWorker();
 });
 
 function bindEvents() {
+  window.addEventListener("scroll", syncTopbarState, { passive: true });
+  window.addEventListener("resize", syncTopbarState);
+
   document.addEventListener("click", (event) => {
     const filterButton = event.target.closest("[data-filter]");
     if (filterButton) {
@@ -1457,6 +1461,17 @@ function bindEvents() {
       goToTimelineIndex(currentTimelineIndex + 1);
     });
   }
+}
+
+function syncTopbarState() {
+  const topbar = document.querySelector(".topbar");
+  const hero = document.querySelector(".hero");
+  if (!topbar) {
+    return;
+  }
+
+  const compactThreshold = hero ? Math.max(hero.offsetHeight * 0.2, 72) : 72;
+  topbar.classList.toggle("is-condensed", window.scrollY > compactThreshold);
 }
 
 function renderScenarioCards() {

@@ -33,6 +33,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 132px;
 }
 
 body {
@@ -147,7 +148,7 @@ a {
   z-index: 1;
   width: min(1440px, calc(100vw - 28px));
   margin: 0 auto 28px;
-  padding-top: 80px;
+  padding-top: 20px;
 }
 
 .hero,
@@ -466,32 +467,53 @@ a {
 }
 
 .topbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  display: flex;
+  position: sticky;
+  top: 12px;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
+  gap: 14px 18px;
   width: 100%;
-  padding: 12px 20px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border-radius: 30px;
   background:
-    linear-gradient(180deg, rgba(137, 200, 255, 0.96), rgba(137, 200, 255, 0.92)),
-    linear-gradient(180deg, rgba(247, 251, 255, 0.92), rgba(221, 236, 255, 0.32));
+    linear-gradient(180deg, rgba(251, 253, 255, 0.82), rgba(224, 238, 255, 0.34)),
+    rgba(239, 247, 255, 0.18);
   box-shadow:
-    0 8px 24px rgba(7, 19, 37, 0.16),
+    0 14px 34px rgba(7, 19, 37, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.42);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.26);
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  transition:
+    padding 220ms ease,
+    gap 220ms ease,
+    box-shadow 220ms ease,
+    background 220ms ease,
+    transform 220ms ease;
+}
+
+.topbar.is-condensed {
+  gap: 10px 14px;
+  padding: 10px 14px;
+  background:
+    linear-gradient(180deg, rgba(248, 252, 255, 0.92), rgba(230, 241, 255, 0.58)),
+    rgba(243, 249, 255, 0.22);
+  box-shadow:
+    0 10px 24px rgba(7, 19, 37, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.46);
 }
 
 .chips {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
   padding: 5px;
   border-radius: 999px;
   background:
@@ -499,9 +521,15 @@ a {
     rgba(239, 247, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
 }
 
 .chip {
+  flex: 0 0 auto;
   padding: 8px 12px;
   border-radius: 999px;
   background: transparent;
@@ -524,15 +552,23 @@ a {
 
 .meta-inline {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 10px;
   justify-content: flex-end;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.meta-inline::-webkit-scrollbar {
+  display: none;
 }
 
 .meta-inline span {
-  display: inline-flex;
+  display: inline-grid;
+  grid-auto-flow: column;
   align-items: center;
   gap: 7px;
+  flex: 0 0 auto;
   padding: 11px 13px;
   border-radius: 999px;
   background:
@@ -544,6 +580,11 @@ a {
     0 12px 24px rgba(10, 20, 40, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.28);
   font-size: 0.9rem;
+}
+
+.topbar.is-condensed .meta-inline span {
+  padding: 8px 11px;
+  font-size: 0.82rem;
 }
 
 .meta-inline strong {
@@ -1802,6 +1843,11 @@ select:focus {
     grid-template-columns: 1fr;
   }
 
+  .topbar {
+    top: 10px;
+    gap: 12px;
+  }
+
   .meta-inline {
     justify-content: flex-start;
   }
@@ -1833,7 +1879,7 @@ select:focus {
   .app-shell {
     width: min(100vw - 16px, 100%);
     margin: 8px auto 18px;
-    padding-top: 76px;
+    padding-top: 10px;
   }
 
   .hero {
@@ -1865,16 +1911,22 @@ select:focus {
   }
 
   .chip {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     justify-content: center;
   }
 
   .topbar {
-    top: 0;\n    left: 0;\n    right: 0;
-    width: 100%;
-    padding: 12px 16px;
-    justify-content: center;
-    gap: 8px;
+    top: 8px;
+    margin-top: 12px;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    border-radius: 24px;
+    gap: 10px;
+  }
+
+  .meta-inline span {
+    padding: 8px 10px;
+    font-size: 0.8rem;
   }
 
   .title-row,
