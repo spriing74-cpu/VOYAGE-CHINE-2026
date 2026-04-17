@@ -1464,7 +1464,7 @@ function bindEvents() {
 }
 
 function syncTopbarState() {
-  const topbar = document.querySelector(".topbar");
+  const topbar = document.querySelector(".filter-dock");
   const hero = document.querySelector(".hero");
   if (!topbar) {
     return;
