@@ -1096,6 +1096,27 @@ select:focus {
   gap: 16px;
 }
 
+.timeline-empty-state {
+  display: grid;
+  gap: 6px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(233, 242, 255, 0.24)),
+    rgba(248, 252, 255, 0.44);
+  border: 1px dashed rgba(76, 125, 190, 0.26);
+  color: var(--muted);
+}
+
+.timeline-empty-state strong {
+  color: var(--ink);
+  font-size: 0.98rem;
+}
+
+.timeline-empty-state span {
+  line-height: 1.6;
+}
+
 .timeline-slide {
   min-width: 100%;
   width: 100%;

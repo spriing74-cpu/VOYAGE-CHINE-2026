@@ -1,4 +1,5 @@
 const STORAGE_KEY = "voyage-chine-2026-planner";
+const VALID_FILTERS = new Set(["all", "transport", "shanghai", "beijing", "hotels", "restaurants"]);
 
 const cityDayCounts = {
   shanghai: 7,
@@ -1224,7 +1225,7 @@ document.addEventListener("DOMContentLoaded", () => {
   syncInputsFromState();
   updatePanels();
   initMap();
-  applyFilter(state.filter);
+  applyFilter(state.filter, { recoverTimeline: true });
   bindEvents();
   syncTopbarState();
   registerServiceWorker();
@@ -1655,37 +1656,45 @@ function renderHotelMapInsights() {
 
 function renderTimeline() {
   const timeline = document.getElementById("timeline");
+  if (!timeline) {
+    return;
+  }
+
+  const activeDay = itineraryDays[currentTimelineIndex] || itineraryDays[0];
+  if (!activeDay) {
+    timeline.innerHTML = "";
+    return;
+  }
+
+  currentTimelineIndex = clamp(currentTimelineIndex, 0, itineraryDays.length - 1);
+  const cards = activeDay.activityIds
+    .map((activityId) => activityById[activityId])
+    .filter(Boolean)
+    .map((activity) => renderActivityCard(activity))
+    .join("");
+
   timeline.innerHTML = `
-    <div class="timeline-viewport" id="timeline-viewport">
-      <div class="timeline-track">
-        ${itineraryDays
-    .map((day) => {
-      const cards = day.activityIds.map((activityId) => renderActivityCard(activityById[activityId])).join("");
-      return `
-        <article class="day-block fade-in timeline-slide" data-day-city="${day.city}" data-timeline-slide>
-          <div class="day-head">
-            <div>
-              <p class="section-kicker">${day.label}</p>
-              <h3 class="day-title">${day.title}</h3>
-              <p class="day-subtitle">${day.note}</p>
-            </div>
-          </div>
-          <div class="day-grid">
-            ${cards}
-          </div>
-        </article>
-      `;
-    })
-    .join("")}
+    <article class="day-block fade-in timeline-panel" data-day-city="${activeDay.city}" data-timeline-panel>
+      <div class="day-head">
+        <div>
+          <p class="section-kicker">${activeDay.label}</p>
+          <h3 class="day-title">${activeDay.title}</h3>
+          <p class="day-subtitle">${activeDay.note}</p>
+        </div>
+        <div class="day-badge">${activeDay.city === "shanghai" ? "Shanghai" : "Pékin"}</div>
       </div>
-    </div>
+      <div class="day-grid">
+        ${cards}
+      </div>
+      <div class="timeline-empty-state filter-hidden" data-day-empty-state>
+        <strong>Aucune visite visible avec ce filtre</strong>
+        <span>Repasse sur "Tout", "${activeDay.city === "shanghai" ? "Shanghai" : "Pékin"}" ou change de journée pour revoir les activités avec leurs photos.</span>
+      </div>
+    </article>
   `;
 
-  bindTimelineSwipe();
   renderTimelineProgress();
-  window.requestAnimationFrame(() => {
-    goToTimelineIndex(currentTimelineIndex, false);
-  });
+  syncTimelineButtons();
 }
 
 function renderTimelineProgress() {
@@ -1704,6 +1713,7 @@ function renderTimelineProgress() {
           title="${day.label}"
         >
           <span>${index + 1}</span>
+          <small>${day.city === "shanghai" ? "SH" : "PK"} • ${day.label.split(" ")[0]}</small>
         </button>
       `
     )
@@ -1711,84 +1721,22 @@ function renderTimelineProgress() {
 }
 
 function bindTimelineSwipe() {
-  const viewport = document.getElementById("timeline-viewport");
-  if (!viewport) {
-    return;
-  }
-
-  // Touch swipe tracking for fling gestures
-  let touchStartX = 0;
-  let touchStartTime = 0;
-  let isDragging = false;
-
-  viewport.addEventListener("touchstart", (e) => {
-    touchStartX = e.touches[0].clientX;
-    touchStartTime = Date.now();
-    isDragging = true;
-    viewport.classList.add("dragging");
-  });
-
-  viewport.addEventListener("touchend", (e) => {
-    if (!isDragging) return;
-    isDragging = false;
-    viewport.classList.remove("dragging");
-
-    const touchEndX = e.changedTouches[0].clientX;
-    const elapsed = Date.now() - touchStartTime;
-    const delta = touchStartX - touchEndX;
-    const velocity = Math.abs(delta) / (elapsed || 1);
-
-    // Fling detection: if fast swipe (velocity > 0.5), navigate
-    if (velocity > 0.5 && Math.abs(delta) > 30) {
-      if (delta > 0) {
-        goToTimelineIndex(currentTimelineIndex + 1);
-      } else {
-        goToTimelineIndex(currentTimelineIndex - 1);
-      }
-    }
-  });
-
-  viewport.addEventListener("scroll", () => {
-    const slides = [...viewport.querySelectorAll("[data-timeline-slide]")];
-    if (slides.length === 0) {
-      return;
-    }
-    const viewportCenter = viewport.scrollLeft + viewport.clientWidth / 2;
-    let bestIndex = currentTimelineIndex;
-    let bestDistance = Number.POSITIVE_INFINITY;
-
-    slides.forEach((slide, index) => {
-      const slideCenter = slide.offsetLeft + slide.clientWidth / 2;
-      const distance = Math.abs(slideCenter - viewportCenter);
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        bestIndex = index;
-      }
-    });
-
-    if (bestIndex !== currentTimelineIndex) {
-      currentTimelineIndex = bestIndex;
-      renderTimelineProgress();
-      syncTimelineButtons();
-    }
-  }, { passive: true });
+  return;
 }
 
 function goToTimelineIndex(index, smooth = true) {
-  const viewport = document.getElementById("timeline-viewport");
-  const slides = viewport ? [...viewport.querySelectorAll("[data-timeline-slide]")] : [];
-  if (!viewport || slides.length === 0) {
+  if (itineraryDays.length === 0) {
     return;
   }
 
-  currentTimelineIndex = clamp(index, 0, slides.length - 1);
-  const target = slides[currentTimelineIndex];
-  viewport.scrollTo({
-    left: target.offsetLeft,
-    behavior: smooth ? "smooth" : "auto",
-  });
-  renderTimelineProgress();
-  syncTimelineButtons();
+  currentTimelineIndex = clamp(index, 0, itineraryDays.length - 1);
+  renderTimeline();
+  applyFilter(state.filter);
+
+  const timeline = document.getElementById("timeline");
+  if (smooth && timeline) {
+    timeline.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
 }
 
 function syncTimelineButtons() {
@@ -2201,10 +2149,13 @@ function refreshSelectionStyles() {
   });
 }
 
-function applyFilter(filter) {
-  state.filter = filter;
+function applyFilter(filter, options = {}) {
+  const { recoverTimeline = false } = options;
+  const normalizedFilter = normalizeFilter(filter);
+
+  state.filter = normalizedFilter;
   document.querySelectorAll("[data-filter]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.filter === filter);
+    button.classList.toggle("active", button.dataset.filter === normalizedFilter);
   });
 
   const transportSection = document.querySelector('[data-group="transport"]');
@@ -2218,10 +2169,10 @@ function applyFilter(filter) {
   document.querySelectorAll(".timeline-card").forEach((card) => {
     card.classList.remove("filter-hidden");
     const group = card.dataset.cardGroup;
-    if (filter === "shanghai" || filter === "beijing") {
-      card.classList.toggle("filter-hidden", group !== filter);
+    if (normalizedFilter === "shanghai" || normalizedFilter === "beijing") {
+      card.classList.toggle("filter-hidden", group !== normalizedFilter);
     }
-    if (filter === "transport" || filter === "hotels" || filter === "restaurants") {
+    if (normalizedFilter === "transport" || normalizedFilter === "hotels" || normalizedFilter === "restaurants") {
       card.classList.add("filter-hidden");
     }
   });
@@ -2229,10 +2180,10 @@ function applyFilter(filter) {
   document.querySelectorAll(".lodging-card").forEach((card) => {
     card.classList.remove("filter-hidden");
     const city = card.dataset.city;
-    if (filter === "shanghai" || filter === "beijing") {
-      card.classList.toggle("filter-hidden", city !== filter);
+    if (normalizedFilter === "shanghai" || normalizedFilter === "beijing") {
+      card.classList.toggle("filter-hidden", city !== normalizedFilter);
     }
-    if (filter === "transport" || filter === "restaurants") {
+    if (normalizedFilter === "transport" || normalizedFilter === "restaurants") {
       card.classList.add("filter-hidden");
     }
   });
@@ -2240,34 +2191,43 @@ function applyFilter(filter) {
   document.querySelectorAll(".restaurant-card").forEach((card) => {
     card.classList.remove("filter-hidden");
     const city = card.dataset.city;
-    if (filter === "shanghai" || filter === "beijing") {
-      card.classList.toggle("filter-hidden", city !== filter);
+    if (normalizedFilter === "shanghai" || normalizedFilter === "beijing") {
+      card.classList.toggle("filter-hidden", city !== normalizedFilter);
     }
-    if (filter === "transport" || filter === "hotels") {
+    if (normalizedFilter === "transport" || normalizedFilter === "hotels") {
       card.classList.add("filter-hidden");
     }
   });
 
-  if (filter === "transport") {
+  if (normalizedFilter === "transport") {
     hotelSection?.classList.add("filter-hidden");
     restaurantSection?.classList.add("filter-hidden");
   }
-  if (filter === "hotels") {
+  if (normalizedFilter === "hotels") {
     transportSection?.classList.add("filter-hidden");
     restaurantSection?.classList.add("filter-hidden");
   }
-  if (filter === "restaurants") {
+  if (normalizedFilter === "restaurants") {
     transportSection?.classList.add("filter-hidden");
     hotelSection?.classList.add("filter-hidden");
   }
-  if (filter === "shanghai" || filter === "beijing") {
+  if (normalizedFilter === "shanghai" || normalizedFilter === "beijing") {
     transportSection?.classList.add("filter-hidden");
   }
 
   document.querySelectorAll(".day-block").forEach((block) => {
     const visibleCards = block.querySelectorAll(".timeline-card:not(.filter-hidden)");
-    block.classList.toggle("filter-hidden", visibleCards.length === 0);
+    const emptyState = block.querySelector("[data-day-empty-state]");
+    emptyState?.classList.toggle("filter-hidden", visibleCards.length > 0);
   });
+
+  if (recoverTimeline) {
+    const visibleTimelineCards = document.querySelectorAll(".timeline-card:not(.filter-hidden)").length;
+    if (visibleTimelineCards === 0 && normalizedFilter !== "all") {
+      applyFilter("all");
+      return;
+    }
+  }
 
   saveState();
 }
@@ -2679,6 +2639,7 @@ function loadState() {
       ...parsed,
       travelMode: parsed.travelMode || defaultState.travelMode,
       mapExplorerScope: parsed.mapExplorerScope || defaultState.mapExplorerScope,
+      filter: normalizeFilter(parsed.filter),
       costs: {
         ...cloneState(defaultState).costs,
         ...(parsed.costs || {}),
@@ -2715,6 +2676,10 @@ function loadState() {
   } catch (error) {
     return cloneState(defaultState);
   }
+}
+
+function normalizeFilter(filter) {
+  return VALID_FILTERS.has(filter) ? filter : "all";
 }
 
 function saveState() {
