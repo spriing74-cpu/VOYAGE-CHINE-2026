@@ -2229,6 +2229,9 @@ function applyFilter(filter, options = {}) {
     }
   }
 
+  syncTimelineButtons();
+  renderTimelineProgress();
+
   saveState();
 }
 

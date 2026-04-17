@@ -1024,76 +1024,23 @@ select:focus {
   position: relative;
 }
 
-.timeline::before,
-.timeline::after {
-  content: "❮";
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
-  color: rgba(75, 163, 255, 0.6);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 2;
-  transition: opacity 300ms ease;
-  font-weight: bold;
-}
-
-.timeline::before {
-  left: 12px;
-  content: "❮";
-}
-
-.timeline::after {
-  right: 12px;
-  content: "❯";
-}
-
-.timeline:hover::before,
-.timeline:hover::after {
-  opacity: 0.8;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.8;
-  }
-  50% {
-    opacity: 0.3;
-  }
-}
-
-.timeline-viewport {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  touch-action: pan-x;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  cursor: grab;
-  user-select: none;
-}
-
-.timeline-viewport.dragging {
-  cursor: grabbing;
-  scroll-behavior: auto;
-}
-
-.timeline-viewport::-webkit-scrollbar {
-  display: none;
-}
-
-.timeline-track {
-  display: flex;
-  gap: 16px;
-}
-
 .day-block {
   display: grid;
   gap: 16px;
+}
+
+.timeline-panel {
+  padding: 22px;
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(231, 242, 255, 0.24)),
+    rgba(252, 254, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1px 0 rgba(255, 255, 255, 0.44);
+  backdrop-filter: blur(22px) saturate(175%);
+  -webkit-backdrop-filter: blur(22px) saturate(175%);
 }
 
 .timeline-empty-state {
@@ -1117,27 +1064,7 @@ select:focus {
   line-height: 1.6;
 }
 
-.timeline-slide {
-  min-width: 100%;
-  width: 100%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  padding: 22px;
-  border-radius: 28px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.64), rgba(231, 242, 255, 0.24)),
-    rgba(252, 254, 255, 0.48);
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  box-shadow:
-    var(--shadow-soft),
-    inset 0 1px 0 rgba(255, 255, 255, 0.44);
-  backdrop-filter: blur(22px) saturate(175%);
-  -webkit-backdrop-filter: blur(22px) saturate(175%);
-  transition: opacity 300ms ease;
-  flex-shrink: 0;
-}
-
-.timeline-slide.fade-in {
+.timeline-panel.fade-in {
   animation: slideIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -1153,14 +1080,15 @@ select:focus {
 }
 
 .timeline-dot {
-  display: inline-flex;
+  display: inline-grid;
   align-items: center;
   justify-content: center;
-  min-width: 34px;
-  height: 34px;
-  padding: 0 10px;
+  gap: 2px;
+  min-width: 62px;
+  min-height: 48px;
+  padding: 7px 10px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 18px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(233, 242, 255, 0.22)),
     rgba(248, 252, 255, 0.38);
@@ -1192,11 +1120,41 @@ select:focus {
   font-weight: 800;
 }
 
+.timeline-dot small {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(21, 74, 146, 0.72);
+}
+
+.timeline-dot.active small {
+  color: rgba(247, 251, 255, 0.88);
+}
+
 .day-head {
   display: flex;
   align-items: end;
   justify-content: space-between;
   gap: 18px;
+}
+
+.day-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(162, 219, 255, 0.24), rgba(83, 150, 255, 0.42)),
+    rgba(228, 241, 255, 0.36);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  color: #18589f;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .day-title {
